@@ -40,13 +40,6 @@
 			<version>5.1.39</version>
 		</dependency>
 
-		<!-- https://mvnrepository.com/artifact/com.alibaba/druid -->
-		<dependency>
-			<groupId>com.alibaba</groupId>
-			<artifactId>druid</artifactId>
-			<version>1.0.20</version>
-		</dependency>
-
 		<!-- https://mvnrepository.com/artifact/org.eclipse.jetty/jetty-webapp -->
 		<dependency>
 			<groupId>org.eclipse.jetty</groupId>
@@ -54,32 +47,17 @@
 			<version>9.3.10.v20160621</version>
 		</dependency>
 
-		<!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-core -->
 		<dependency>
-			<groupId>com.fasterxml.jackson.core</groupId>
-			<artifactId>jackson-core</artifactId>
-			<version>2.7.5</version>
+			<groupId>net.sf.ehcache</groupId>
+			<artifactId>ehcache</artifactId>
+			<version>2.10.2</version>
 		</dependency>
 
-		<!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind -->
+		<!-- https://mvnrepository.com/artifact/org.roaringbitmap/RoaringBitmap -->
 		<dependency>
-			<groupId>com.fasterxml.jackson.core</groupId>
-			<artifactId>jackson-databind</artifactId>
-			<version>2.7.5</version>
-		</dependency>
-
-		<!-- https://mvnrepository.com/artifact/org.aspectj/aspectjweaver -->
-		<dependency>
-			<groupId>org.aspectj</groupId>
-			<artifactId>aspectjweaver</artifactId>
-			<version>1.8.9</version>
-		</dependency>
-
-		<!-- https://mvnrepository.com/artifact/org.springframework/spring-webmvc -->
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-webmvc</artifactId>
-			<version>4.3.2.RELEASE</version>
+			<groupId>org.roaringbitmap</groupId>
+			<artifactId>RoaringBitmap</artifactId>
+			<version>0.6.25</version>
 		</dependency>
 	</dependencies>
 </project>

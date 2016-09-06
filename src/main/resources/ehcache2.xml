@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE xml>
+<ehcache updateCheck="false">
+
+	<diskStore path="user.dir/ehcache" />
+
+	<cacheManagerPeerProviderFactory 
+		class="net.sf.ehcache.distribution.RMICacheManagerPeerProviderFactory"
+		properties="peerDiscovery=manual,rmiUrls=//localhost:40001/sampleCache2|//localhost:40002/sampleCache2" />
+
+<!-- 	<cacheManagerPeerProviderFactory  -->
+<!-- 		class="net.sf.ehcache.distribution.RMICacheManagerPeerProviderFactory" -->
+<!-- 		properties="peerDiscovery=automatic, -->
+<!-- 					multicastGroupAddress=localhost, -->
+<!-- 					multicastGroupPort=400004, -->
+<!-- 					timeToLive=32" /> -->
+<!-- 	<cacheManagerPeerProviderFactory  -->
+<!-- 		class="net.sf.ehcache.distribution.RMICacheManagerPeerProviderFactory" -->
+<!-- 		properties="peerDiscovery=automatic, multicastGroupAddress=230.0.0.1, multicastGroupPort=40001, timeToLive=32" /> -->
+
+	<cacheManagerPeerListenerFactory class="net.sf.ehcache.distribution.RMICacheManagerPeerListenerFactory"
+		properties="hostName=localhost, port=40002,socketTimeoutMillis=2000" />
+
+	<cache name="sampleCache2"
+		eternal="false"
+		diskPersistent="false"
+		timeToIdleSeconds="120"
+		timeToLiveSeconds="0"
+		memoryStoreEvictionPolicy="FIFO"
+		maxEntriesLocalHeap="100"
+		maxBytesLocalDisk="3G"
+		maxEntriesLocalDisk="10010"
+		>
+		<bootstrapCacheLoaderFactory class="net.sf.ehcache.distribution.RMIBootstrapCacheLoaderFactory" />
+		<cacheEventListenerFactory class="net.sf.ehcache.distribution.RMICacheReplicatorFactory" />
+	</cache>
+	<!-- <cache name="ccc" -->
+	<!-- maxEntriesLocalHeap="10000" -->
+	<!-- eternal="false" -->
+	<!-- timeToIdleSeconds="120" -->
+	<!-- timeToLiveSeconds="0" -->
+	<!-- maxEntriesLocalDisk="10000" -->
+	<!-- diskExpiryThreadIntervalSeconds="120" -->
+	<!-- memoryStoreEvictionPolicy="LRU"> -->
+	<!-- <persistence strategy="localTempSwap"/> -->
+	<!-- </cache> -->
+
+	<!-- <cache name="bbb" -->
+	<!-- eternal="false" -->
+	<!-- timeToIdleSeconds="300" -->
+	<!-- timeToLiveSeconds="0" -->
+	<!-- diskExpiryThreadIntervalSeconds="1" -->
+	<!-- memoryStoreEvictionPolicy="LRU" -->
+	<!-- diskPersistent="true" -->
+	<!-- maxEntriesLocalHeap="10000" -->
+	<!-- maxElementsInMemory="3" -->
+	<!-- maxElementsOnDisk="1000" -->
+	<!-- > -->
+	<!-- </cache> -->
+</ehcache>
+
