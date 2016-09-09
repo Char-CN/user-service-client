@@ -44,7 +44,7 @@
 		</init-param>
 		<init-param>
 			<param-name>serviceUrl</param-name>
-			<param-value>http://127.0.0.1:8010/userservice</param-value>
+			<param-value>http://bigdata.blazer.org:8010/userservice</param-value>
 		</init-param>
 	</filter>
 	<filter-mapping>
