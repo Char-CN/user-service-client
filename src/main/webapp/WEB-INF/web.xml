@@ -46,6 +46,10 @@
 			<param-name>serviceUrl</param-name>
 			<param-value>http://bigdata.blazer.org:8010/userservice</param-value>
 		</init-param>
+		<init-param>
+			<param-name>noPermissionsPage</param-name>
+			<param-value>nopermissions.html</param-value>
+		</init-param>
 	</filter>
 	<filter-mapping>
 		<filter-name>PermissionsFilter</filter-name>

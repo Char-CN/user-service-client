@@ -7,6 +7,7 @@ import java.io.InputStreamReader;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
@@ -14,26 +15,20 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.client.HttpClients;
-import org.apache.http.util.EntityUtils;
-import org.blazer.userservice.model.UserModel;
-
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class PermissionsFilter implements Filter {
 
 	private static final String SESSION_KEY = "MYSESSIONID";
-	private static ThreadLocal<HttpServletRequest> HttpRequestThreadLocalHolder = new ThreadLocal<HttpServletRequest>(); 
+	private static final String COOKIE_PATH = "/";
+	private static final int COOKIE_SECONDS = 10;
+
 	private String systemName = null;
 	private String serviceUrl = null;
+	private String noPermissionsPage = null;
 
 	public String executeGet(String url) throws Exception {
 		BufferedReader in = null;
@@ -47,7 +42,10 @@ public class PermissionsFilter implements Filter {
 			String line = "";
 			String NL = System.getProperty("line.separator");
 			while ((line = in.readLine()) != null) {
-				sb.append(line + NL);
+				if (sb.length() != 0) {
+					sb.append(NL);
+				}
+				sb.append(line);
 			}
 			in.close();
 			content = sb.toString();
@@ -65,6 +63,7 @@ public class PermissionsFilter implements Filter {
 
 	public void doFilter(ServletRequest req, ServletResponse resp, FilterChain chain) throws IOException, ServletException {
 		HttpServletRequest request = (HttpServletRequest) req;
+		HttpServletResponse response = (HttpServletResponse) resp;
 		String sessionid = getSessionId(request);
 		System.out.println(request.getRequestURL());
 		System.out.println(request.getRequestURI());
@@ -82,11 +81,27 @@ public class PermissionsFilter implements Filter {
 			requestUrl.append("&").append("url").append("=").append(url);
 			requestUrl.append("&").append("systemName").append("=").append(systemName);
 			String content = executeGet(requestUrl.toString());
+			String[] contents = content.split(",");
+			delay(response, contents[1]);
 			System.out.println(content);
+			if ("false".equals(contents[0])) {
+				System.out.println("dispatcher");
+				RequestDispatcher rd = request.getRequestDispatcher(noPermissionsPage);
+				rd.forward(req, resp);
+				return;
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		chain.doFilter(req, resp);
+	}
+
+	private void delay(HttpServletResponse response, String newSession) {
+		System.out.println("delay ~ new session : " + newSession);
+		Cookie cookie = new Cookie(SESSION_KEY, newSession);
+		cookie.setPath(COOKIE_PATH);
+		cookie.setMaxAge(COOKIE_SECONDS);
+		response.addCookie(cookie);
 	}
 
 	private String getSessionId(HttpServletRequest request) {
@@ -108,8 +123,10 @@ public class PermissionsFilter implements Filter {
 	public void init(FilterConfig filterConfig) throws ServletException {
 		systemName = filterConfig.getInitParameter("systemName");
 		serviceUrl = filterConfig.getInitParameter("serviceUrl");
+		noPermissionsPage = filterConfig.getInitParameter("noPermissionsPage");
 		System.out.println("init filter : " + systemName);
 		System.out.println("init filter : " + serviceUrl);
+		System.out.println("init filter : " + noPermissionsPage);
 	}
 
 	public void destroy() {

@@ -1,4 +1,4 @@
-var $USER$SERVICE$ = function() {
+var $userservice = function() {
 	var url = "http://bigdata.blazer.org:8010";
 	var checkuser = url + "/userservice/checkuser.do";
 	var getlogin = url + "/login.html";
@@ -42,4 +42,4 @@ var $USER$SERVICE$ = function() {
 	init();
 };
 
-$USER$SERVICE$();
+$userservice();
