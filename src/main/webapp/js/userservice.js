@@ -12,7 +12,7 @@ var $userservice = function() {
 				MYSESSIONID : getCookie("MYSESSIONID")
 			},
 			success : function(data) {
-				if (data == false || data == "false") {
+				if (data != undefined && data.split(",", 2)[0] == "false") {
 					alert("对不起，您没有登录，请您登录。");
 					location.href = getlogin + "?url=" + encodeURIComponent(location.href);
 				} else {

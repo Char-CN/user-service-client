@@ -22,13 +22,13 @@ import org.apache.http.impl.client.HttpClients;
 
 public class PermissionsFilter implements Filter {
 
-	private static final String SESSION_KEY = "MYSESSIONID";
+	private static final String COOKIE_KEY = "MYSESSIONID";
 	private static final String COOKIE_PATH = "/";
-	private static final int COOKIE_SECONDS = 10;
 
 	private String systemName = null;
 	private String serviceUrl = null;
 	private String noPermissionsPage = null;
+	private Integer cookieSeconds = null;
 
 	public String executeGet(String url) throws Exception {
 		BufferedReader in = null;
@@ -77,13 +77,15 @@ public class PermissionsFilter implements Filter {
 //			System.out.println(um);
 			StringBuilder requestUrl = new StringBuilder(serviceUrl);
 			requestUrl.append("/checkurl.do?");
-			requestUrl.append(SESSION_KEY).append("=").append(sessionid);
+			requestUrl.append(COOKIE_KEY).append("=").append(sessionid);
 			requestUrl.append("&").append("url").append("=").append(url);
 			requestUrl.append("&").append("systemName").append("=").append(systemName);
 			String content = executeGet(requestUrl.toString());
-			String[] contents = content.split(",");
-			delay(response, contents[1]);
 			System.out.println(content);
+			String[] contents = content.split(",", 2);
+			if (contents.length == 2) {
+				delay(response, contents[1]);
+			}
 			if ("false".equals(contents[0])) {
 				System.out.println("dispatcher");
 				RequestDispatcher rd = request.getRequestDispatcher(noPermissionsPage);
@@ -97,10 +99,13 @@ public class PermissionsFilter implements Filter {
 	}
 
 	private void delay(HttpServletResponse response, String newSession) {
+		if ("".equals(newSession)) {
+			newSession = null;
+		}
 		System.out.println("delay ~ new session : " + newSession);
-		Cookie cookie = new Cookie(SESSION_KEY, newSession);
+		Cookie cookie = new Cookie(COOKIE_KEY, newSession);
 		cookie.setPath(COOKIE_PATH);
-		cookie.setMaxAge(COOKIE_SECONDS);
+		cookie.setMaxAge(cookieSeconds);
 		response.addCookie(cookie);
 	}
 
@@ -111,7 +116,7 @@ public class PermissionsFilter implements Filter {
 		}
 		Cookie sessionCookie = null;
 		for (Cookie cookie : cookies) {
-			if (SESSION_KEY.equals(cookie.getName())) {
+			if (COOKIE_KEY.equals(cookie.getName())) {
 				System.out.println("cookie : " + cookie.getName() + " | " + cookie.getValue());
 				sessionCookie = cookie;
 				break;
@@ -124,9 +129,15 @@ public class PermissionsFilter implements Filter {
 		systemName = filterConfig.getInitParameter("systemName");
 		serviceUrl = filterConfig.getInitParameter("serviceUrl");
 		noPermissionsPage = filterConfig.getInitParameter("noPermissionsPage");
-		System.out.println("init filter : " + systemName);
-		System.out.println("init filter : " + serviceUrl);
-		System.out.println("init filter : " + noPermissionsPage);
+		try {
+			cookieSeconds = Integer.parseInt(filterConfig.getInitParameter("cookieSeconds"));
+		} catch (Exception e) {
+			System.err.println("初始化cookie时间出错。");
+		}
+		System.out.println("init filter systemName : " + systemName);
+		System.out.println("init filter serviceUrl : " + serviceUrl);
+		System.out.println("init filter noPermissionsPage : " + noPermissionsPage);
+		System.out.println("init filter cookieSeconds : " + cookieSeconds);
 	}
 
 	public void destroy() {
