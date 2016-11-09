@@ -1,20 +1,29 @@
+<!-- <META HTTP-EQUIV="Refresh" CONTENT="0; URL=index.do"> -->
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
 <meta http-equiv="Access-Control-Allow-Origin" content="*">
 <script type="text/javascript" src="js/jquery.min.js"></script>
-<script type="text/javascript" src="js/userservice.js"></script>
-<!-- <META HTTP-EQUIV="Refresh" CONTENT="0; URL=index.do"> -->
+<script type="text/javascript" src="http://bigdata.blazer.org:8030/js/userservice.js"></script>
 <script>
-	var dianji = function() {
-		alert(1);
+	var $userservice = new $userservice("user-service-client");
+	window.onload = function() {
+		// 增加用户管理
+		var logout = $('<a href="javascript:void(0);">登出</a>');
+		logout.click(function() {
+			$userservice.logout();
+		});
+		var login = $('<span style="float: right; padding: 7px;">' + $userservice.userName + '('+ $userservice.userNameCn+')&nbsp;&nbsp;</span>');
+		login.append(logout);
+		$("body").append(login);
+		$("body").append("<span>aaaaaaaaa</span>");
 	};
 </script>
 </head>
 <body>
-首页as
-<input type="button" value="点击" onclick="dianji()">
+	首页as
+	<input type="button" value="点击" onclick="dianji()">
 </body>
 </html>
 

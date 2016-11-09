@@ -1,4 +1,4 @@
-package org.blazer.userservice.action;
+package org.blazer.userserviceclient.action;
 
 import java.io.IOException;
 
